@@ -1,7 +1,3 @@
-* {
-	box-sizing: border-box;
-}
-
 body {
 	width: 1368px;
 	margin: auto;
@@ -67,15 +63,12 @@ $color-map: (
 	@include sizer($width, $height);
 	display: flex;
 	flex-flow: column-reverse;
-	border: 1px solid;
 	&__label {
 		display: inline-block;
-		@include sizer($width, $height/2);
 		@include email_param($height);
 	}
 	& input[type='email'] {
 		display: inline-block;
-		@include sizer($width, $height/2);
 		@include email_param($height);
 		@include color($color-map, secondary);
 		border-radius: 30px;
