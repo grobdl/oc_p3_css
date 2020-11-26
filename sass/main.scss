@@ -1,19 +1,100 @@
-@import "./utils/variables";
-@import "./utils/functions";
-@import "./utils/mixins";
-@import "./utils/extensions";
+* {
+	box-sizing: border-box;
+}
 
-@import "./base/base";
-@import "./base/typography";
+body {
+	width: 1368px;
+	margin: auto;
+	padding: 200px;
+}
 
-@import "./components/buttons";
+$width: 500px;
+$height: 100px;
+$translation: 5px;
+$translate-map: (
+	0%: -$translation,
+	25%: $translation,
+	50%: -$translation,
+	75%: $translation,
+	100%: 0px,
+);
+$color-map: (
+	primary: purple,
+	secondary: black,
+	invalid: red,
+	valid: green,
+);
 
-@import "./layout/header";
-@import "./layout/nav";
-@import "./layout/container";
-@import "./layout/form";
+@function lightner($map, $color) {
+	$color: hsl(
+		hue(map-get($map, $color)),
+		saturation(map-get($map, $color)),
+		95%
+	);
+	@return $color;
+}
 
+@mixin shaker($status) {
+	@each $n, $translation in $status {
+		#{$n} {
+			transform: translatex($translation);
+		}
+	}
+}
+@mixin sizer($width, $height) {
+	width: $width;
+	height: $height;
+}
 
-@import "./pages/work";
-@import "./pages/about";
-@import "./pages/project";
+@mixin email_param($height) {
+	line-height: $height/2;
+	text-align: center;
+	font-size: 36px;
+	font-weight: bold;
+}
+
+@mixin color($map, $color) {
+	border: 2px solid map-get($map, $color);
+	color: map-get($map, $color);
+	background: lightner($map, $color);
+}
+
+@keyframes invalid_shake {
+	@include shaker($translate-map);
+}
+
+.email {
+	@include sizer($width, $height);
+	display: flex;
+	flex-flow: column-reverse;
+	border: 1px solid;
+	&__label {
+		display: inline-block;
+		@include sizer($width, $height/2);
+		@include email_param($height);
+	}
+	& input[type='email'] {
+		display: inline-block;
+		@include sizer($width, $height/2);
+		@include email_param($height);
+		@include color($color-map, secondary);
+		border-radius: 30px;
+		outline: none;
+		&:focus {
+			@include color($color-map, primary);
+			& + .email__label {
+				color: map-get($color-map, primary);
+			}
+		}
+		&:invalid:not(:focus) {
+			@include color($color-map, invalid);
+			animation: invalid_shake 250ms 0ms both;
+			& + .email__label {
+				color: map-get($color-map, invalid);
+				&::after {
+					content: ' invalide!';
+				}
+			}
+		}
+	}
+}
